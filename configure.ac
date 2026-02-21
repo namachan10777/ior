@@ -412,6 +412,28 @@ PKG_CHECK_MODULES([FINCHFS], [finchfs],
   [with_finchfs=no])
 AM_CONDITIONAL([USE_FINCHFS_AIORI], [test x$with_finchfs != xno])
 
+# LOCUSTA support
+AC_ARG_WITH([locusta],
+  [AS_HELP_STRING([--with-locusta@<:@=PATH@:>@], [support IO with LOCUSTA backend @<:@default=no@:>@])],
+  [], [with_locusta=no])
+AS_IF([test "x$with_locusta" != "xno"], [
+  AS_IF([test "x$with_locusta" != "xyes"], [
+    LOCUSTA_CFLAGS="-I${with_locusta}/include"
+    LOCUSTA_LIBS="-L${with_locusta}/lib -llocustaclient"
+    LOCUSTA_RPATH="-Wl,-rpath=${with_locusta}/lib"
+  ], [
+    locusta_abs_top_srcdir="$(cd "$srcdir" && pwd)"
+    LOCUSTA_CFLAGS="-I${locusta_abs_top_srcdir}/../locustaclient/include"
+    LOCUSTA_LIBS="-L${locusta_abs_top_srcdir}/../target/release -llocustaclient"
+    LOCUSTA_RPATH="-Wl,-rpath=${locusta_abs_top_srcdir}/../target/release"
+  ])
+  AC_DEFINE([USE_LOCUSTA_AIORI], [], [Build LOCUSTA backend AIORI])
+  AC_SUBST(LOCUSTA_CFLAGS)
+  AC_SUBST(LOCUSTA_LIBS)
+  AC_SUBST(LOCUSTA_RPATH)
+])
+AM_CONDITIONAL([USE_LOCUSTA_AIORI], [test "x$with_locusta" != "xno"])
+
 # aws4c is needed for the S3 backend (see --with-S3, below).
 # Version 0.5.2 of aws4c is available at https://github.com/jti-lanl/aws4c.git
 # Install it something like this:

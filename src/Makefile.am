@@ -128,6 +128,13 @@ extraLDFLAGS += @FINCHFS_RPATH@
 extraLDADD += @FINCHFS_LIBS@
 endif
 
+if USE_LOCUSTA_AIORI
+extraSOURCES += aiori-LOCUSTA.c
+extraCPPFLAGS += @LOCUSTA_CFLAGS@
+extraLDFLAGS += @LOCUSTA_RPATH@
+extraLDADD += @LOCUSTA_LIBS@
+endif
+
 if USE_S3_4C_AIORI
 extraSOURCES  += aiori-S3-4c.c
 if AWS4C_DIR
