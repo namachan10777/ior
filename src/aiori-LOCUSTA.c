@@ -150,6 +150,11 @@ Locusta_xfer(int access, aiori_fd_t *fd, IOR_size_t *buffer,
 		break;
 	default:
 		r = locusta_pread(lf->path, buffer, len, offset);
+		if (r != (ssize_t)len) {
+			fprintf(stderr,
+			    "[LOCUSTA] pread: path=%s off=%lld len=%lld r=%zd\n",
+			    lf->path, (long long)offset, (long long)len, r);
+		}
 		break;
 	}
 
@@ -164,6 +169,7 @@ Locusta_close(aiori_fd_t *fd, aiori_mod_opt_t *param)
 	if (hints->dryRun)
 		return;
 
+	locusta_fsync();
 	free(lf->path);
 	free(lf);
 }
@@ -186,7 +192,7 @@ Locusta_version(void)
 static void
 Locusta_fsync(aiori_fd_t *fd, aiori_mod_opt_t *param)
 {
-	/* locusta は同期書き込みのため no-op */
+	locusta_fsync();
 }
 
 static IOR_offset_t
