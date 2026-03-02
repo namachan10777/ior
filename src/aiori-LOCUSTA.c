@@ -169,7 +169,6 @@ Locusta_close(aiori_fd_t *fd, aiori_mod_opt_t *param)
 	if (hints->dryRun)
 		return;
 
-	locusta_fsync();
 	free(lf->path);
 	free(lf);
 }
