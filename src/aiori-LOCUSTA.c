@@ -56,6 +56,15 @@ static void
 Locusta_initialize(aiori_mod_opt_t *options)
 {
 	struct locusta_option *o = (struct locusta_option *)options;
+
+	/* relay モード: LOCUSTA_RELAY_DIR が設定されていれば
+	 * locusta_init に NULL を渡し Rust 側で relay 初期化 */
+	if (getenv("LOCUSTA_RELAY_DIR") != NULL) {
+		if (locusta_init(NULL, 0) != 0)
+			ERR("locusta_init (relay) failed");
+		return;
+	}
+
 	const char *dir_str = NULL;
 
 	/* オプションから取得、なければ環境変数 */
@@ -66,7 +75,8 @@ Locusta_initialize(aiori_mod_opt_t *options)
 
 	if (dir_str == NULL || dir_str[0] == '\0') {
 		ERR("locusta: runtime_dir not specified. "
-		    "Use --locusta.runtime_dir or LOCUSTA_RUNTIME_DIRS env");
+		    "Use --locusta.runtime_dir, LOCUSTA_RUNTIME_DIRS, "
+		    "or LOCUSTA_RELAY_DIR env");
 	}
 
 	/* カンマ区切りをパース */
