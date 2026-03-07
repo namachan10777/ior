@@ -156,7 +156,7 @@ Locusta_xfer(int access, aiori_fd_t *fd, IOR_size_t *buffer,
 
 	switch (access) {
 	case WRITE:
-		r = locusta_pwrite(lf->path, buffer, len, offset);
+		r = locusta_pwrite(lf->path, buffer, len, offset, 0100644);
 		break;
 	default:
 		r = locusta_pread(lf->path, buffer, len, offset);
